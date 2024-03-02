@@ -1,8 +1,8 @@
-@startuml Manage Hotel (POST)
+@startuml Manage Hotel (DELETE)
 
-header Hotel Reservation API Sequence Diagram
+header Hotel Reservation System Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Hotel (POST)"
+title "Manage Hotel (DELETE)"
 
 participant "Client" as client
 participant "<<javaScript>>\n:server" as server
@@ -11,14 +11,13 @@ participant "<<controllers>>\n:hotels" as controllersHotels
 participant "<<model>>\n:Hotel" as modelHotel
 database "<<MongoDB>>\n:hotels" as HotelsDatabase
 
-client->server ++:req.post('/api/v1/hotels')
-server->routerHotels ++:app.use('/api/v1/hotels',hotels)
-routerHotels -> controllersHotels ++:createHotel()
-controllersHotels->modelHotel ++:create(req.body)
+client->server ++:req.delete('/hotels/:id')
+server->routerHotels ++:app.use('/hotels',hotels)
+routerHotels -> controllersHotels ++:deleteHotel()
+controllersHotels->modelHotel ++:findByIdAndDelete(req.params.id)
 modelHotel ->HotelsDatabase ++: HotelSchema
 HotelsDatabase --> modelHotel --: hotel
 controllersHotels <-- modelHotel --:hotel
 controllersHotels->client --:response
-
 
 @enduml

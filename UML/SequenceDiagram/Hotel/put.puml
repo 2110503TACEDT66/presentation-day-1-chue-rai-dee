@@ -1,8 +1,8 @@
-@startuml Manage Hotel (GET)
+@startuml Manage Hotel (PUT)
 
-header Hotel Reservation API Sequence Diagram
+header Hotel Reservation System Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Hotel (GET)"
+title "Manage Hotel (PUT)"
 
 participant "Client" as client
 participant "<<javaScript>>\n:server" as server
@@ -11,14 +11,13 @@ participant "<<controllers>>\n:hotels" as controllersHotels
 participant "<<model>>\n:Hotel" as modelHotel
 database "<<MongoDB>>\n:hotels" as HotelsDatabase
 
-client->server ++:req.get('/api/v1/hotels')
-server->routerHotels ++:app.use('/api/v1/hotels',hotels)
-routerHotels -> controllersHotels ++:getHotels()
-controllersHotels->modelHotel ++:find(req.params.id)
+client->server ++:req.put('/hotels/:id')
+server->routerHotels ++:app.use('/hotels',hotels)
+routerHotels -> controllersHotels ++:updateHotel()
+controllersHotels->modelHotel ++:findByIdAndUpdate(req.params.id, req.body)
 modelHotel ->HotelsDatabase ++: HotelSchema
 HotelsDatabase --> modelHotel --: hotel
 controllersHotels <-- modelHotel --:hotel
 controllersHotels->client --:response
-
 
 @enduml
