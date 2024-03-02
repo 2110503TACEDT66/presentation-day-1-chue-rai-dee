@@ -43,10 +43,11 @@ HotelSchema.pre('deleteOne',{document: true, query: false}, async function(next)
 });
 
 // Reverse populate with virtuals
-HotelSchema.virtual('bookings', {
-    ref: 'Booking',
+HotelSchema.virtual('rooms', {
+    ref: 'Room',
     localField: '_id',
     foreignField: 'hotel',
     justOne: false
 });
+
 module.exports = mongoose.model('Hotel', HotelSchema);

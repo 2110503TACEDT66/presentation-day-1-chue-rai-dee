@@ -19,6 +19,17 @@ const RoomSchema = new mongoose.Schema({
         ref: 'Hotel',
         required: true
     }
+},
+{
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+RoomSchema.virtual('bookings', {
+    ref: 'Booking',
+    localField: '_id',
+    foreignField: 'room',
+    justOne: false
 });
 
 module.exports = mongoose.model('Room', RoomSchema);
