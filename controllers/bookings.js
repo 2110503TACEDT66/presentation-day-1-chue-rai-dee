@@ -80,6 +80,20 @@ exports.addBooking = async (req, res, next) => {
         if(nights >= 3 && req.user.role !== 'admin'){
             return res.status(400).json({ success: false, message: `The user with ID ${req.user.id} cannot make booking with more than 3 nights` });
         }
+        
+        const existingBooking = await Booking.findOne({
+            room: req.body.room,
+            $or: [
+                { bookingbegin: { $lte: req.body.bookingbegin }, bookingend: { $gte: req.body.bookingbegin } },
+                { bookingbegin: { $lte: req.body.bookingend }, bookingend: { $gte: req.body.bookingend } },
+                { bookingbegin: { $gte: req.body.bookingbegin }, bookingend: { $lte: req.body.bookingend } }
+            ]
+        });
+
+        if (existingBooking) {
+            return res.status(400).json({ success: false, message: 'The room is not available on the specified dates' });
+        }
+
         //console.log(req.params.hotelId);
         const hotel = await Hotel.findById(req.params.hotelId);
         if(!hotel){
@@ -87,8 +101,13 @@ exports.addBooking = async (req, res, next) => {
         }
 
         const room = await Room.findById(req.body.room);
+
         if(!room){
             return res.status(404).json({ success: false, message: `No room with the id of ${req.params.roomId}`});
+        }
+
+        if (room.hotel.toString() !== req.params.hotelId) {
+            return res.status(400).json({ success: false, message: 'The specified room does not in the specified hotel' });
         }
 
         const booking = await Booking.create(req.body);
