@@ -1,0 +1,123 @@
+@startuml HotelReservationSystemAPI
+skinparam linetype ortho
+class "<<APPLICATION>>\nHotelReservationSystemAPI" as App
+class "server" as server
+
+App -down-> server
+
+class "Hotel" as hotel {
+  <<GET>> +getHotels(): Hotel
+  <<POST>> +createHotel(): Hotel
+}
+class "Room" as room {
+  <<GET>> +getRooms(): Room
+  <<POST>> +createRoom(): Room
+}
+class "Booking" as booking {
+  <<GET>> +getBookings(): Booking
+  <<POST>> +addBooking(): Booking
+}
+class "auth" as auth
+
+server -down-> hotel : <<Path>>\n/hotels
+server -down-> room : <<Path>>\n/rooms
+server -down-> booking : <<Path>>\n/bookings
+server -down-> auth : <<Path>>\n/auth
+
+class "Hotel" as hotel2 {
+  <<GET>> +getHotel(): Hotel
+  <<PUT>> +updateHotel(): Hotel
+  <<DELETE>> +deleteHotel(): void
+}
+class "Room" as room2 {
+  <<GET>> +getRoom(): Room
+  <<PUT>> +updateRoom(): Room
+  <<DELETE>> +deleteRoom(): void
+}
+class "Booking" as booking2 {
+  <<GET>> +getBooking(): Booking
+  <<PUT>> +updateBooking(): Booking
+  <<DELETE>> +deleteBooking(): void
+}
+
+class "auth" as authRegister {
+  <<POST>> +register(): auth
+}
+class "auth" as authLogin {
+  <<POST>> +login(): auth
+}
+class "auth" as authLogout {
+  <<POST>> +logout(): void
+}
+class "auth" as authMe {
+  <<GET>> +getMe(): auth
+}
+
+hotel -down-> hotel2 : <<Path>>\n/{id}
+room -down-> room2 : <<Path>>\n/{id}
+booking -down-> booking2 : <<Path>>\n/{id}
+
+auth -down-> authLogin : <<Path>>\n/login
+auth -down-> authRegister : <<Path>>\n/register
+auth -down-> authLogout : <<Path>>\n/logout
+auth -down-> authMe : <<Path>>\n/me
+
+class "<<model>>\nHotel" as modelHotel {
+  -name: string
+  -address: string
+  -district: string
+  -province: string
+  -postalcode: string
+  -tel: string
+  --
+  pre('deleteOne')
+  --
+  virtual('rooms')
+}
+
+class "<<model>>\nRoom" as modelRoom {
+  -roomNumber: string
+  -price: Number
+  -maxOccupant: Number
+  -hotel: ObjectId
+  --
+  virtual('bookings')
+}
+
+class "<<model>>\nBooking" as modelBooking {
+  -bookingbegin: Date
+  -bookingend: Date
+  -user: ObjectId
+  -room: ObjectId
+  -hotel: ObjectId
+  -createat: Date
+}
+
+class "<<model>>\User" as modelUser {
+  -name: string
+  -email: string
+  -role: string
+  -password: string
+  -resetPasswordToken: string
+  -resetPasswordExpire: Date
+  -createat: Date
+  --
+  pre('save')
+  --
+  getSignedJwtToken()
+  --
+  matchPassword()
+}
+
+hotel -down-> modelHotel : <<use>>
+hotel2 -down-> modelHotel : <<use>>
+room -down-> modelRoom : <<use>>
+room2 -down-> modelRoom : <<use>>
+booking -down-> modelBooking : <<use>>
+booking2 -down-> modelBooking : <<use>>
+authRegister -down-> modelUser : <<use>>
+authLogin -down-> modelUser : <<use>>
+authMe -down-> modelUser : <<use>>
+authLogout -down-> modelUser : <<use>>
+
+@enduml
