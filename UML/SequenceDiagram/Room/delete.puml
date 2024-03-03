@@ -1,0 +1,23 @@
+@startuml Manage Room (DELETE)
+
+header Room Reservation System Sequence Diagram
+footer Page %page% of %lastpage%
+title "Manage Room (DELETE)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:rooms" as routerrooms
+participant "<<controllers>>\n:rooms" as controllersrooms
+participant "<<model>>\n:Room" as modelroom
+database "<<MongoDB>>\n:rooms" as roomsDatabase
+
+client->server ++:req.delete('/rooms/:id')
+server->routerrooms ++:app.use('/rooms',rooms)
+routerrooms -> controllersrooms ++:deleteRoom()
+controllersrooms->modelroom ++:findByIdAndDelete(req.params.id)
+modelroom ->roomsDatabase ++: RoomSchema
+roomsDatabase --> modelroom --: room
+controllersrooms <-- modelroom --:room
+controllersrooms->client --:response
+
+@enduml
