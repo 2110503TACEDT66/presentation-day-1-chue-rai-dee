@@ -75,9 +75,11 @@ exports.addBooking = async (req, res, next) => {
                 nights += (booking.bookingend - booking.bookingbegin) / (1000 * 60 * 60 * 24);
             }
         });
-       
-        //console.log(nights)
-        if(nights >= 3 && req.user.role !== 'admin'){
+        let datebegin = new Date(req.body.bookingbegin);
+        let dateend = new Date(req.body.bookingend);
+        nights+= (dateend.getTime() - datebegin.getTime()) / (1000 * 60 * 60 * 24);
+        console.log(nights)
+        if(nights >=3 && req.user.role !== 'admin'){
             return res.status(400).json({ success: false, message: `The user with ID ${req.user.id} cannot make booking with more than 3 nights` });
         }
         
