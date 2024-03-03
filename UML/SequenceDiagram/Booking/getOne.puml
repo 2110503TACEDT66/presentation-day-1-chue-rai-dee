@@ -7,12 +7,15 @@ title "Manage Booking (GET ONE)"
 participant "Client" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:bookings" as routerBookings
+participant "<<middleware>>\n:auth" as middlewareAuth
 participant "<<controllers>>\n:bookings" as controllersBookings
 participant "<<model>>\n:Booking" as modelBooking
 database "<<MongoDB>>\n:bookings" as BookingsDatabase
 
 client->server ++:req.get('/bookings/:id')
 server->routerBookings ++:app.use('/bookings',bookings)
+routerBookings->middlewareAuth ++:protect()
+middlewareAuth-->routerBookings :next()
 routerBookings -> controllersBookings ++:getBooking()
 controllersBookings->modelBooking ++:findById(req.params.id)
 modelBooking ->BookingsDatabase ++: BookingSchema
