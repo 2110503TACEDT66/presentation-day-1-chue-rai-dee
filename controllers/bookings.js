@@ -91,7 +91,7 @@ exports.addBooking = async (req, res, next) => {
         });
 
         if (existingBooking) {
-            return res.status(400).json({ success: false, message: 'The room is not available on the specified dates' });
+            return res.status(400).json({ success: false, message: 'The room is not available on the specified date' });
         }
 
         //console.log(req.params.hotelId);
