@@ -101,6 +101,7 @@ class "<<model>>\User" as modelUser {
   -resetPasswordToken: string
   -resetPasswordExpire: Date
   -createat: Date
+  -tel: string
   --
   pre('save')
   --
