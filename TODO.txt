@@ -1,6 +1,0 @@
-1. Change
-    - Hospital -> Hotel
-    - Appointment -> Booking
-2. Add
-    - Room
-    - Check is the room booked for a period of time requested.
