@@ -35,6 +35,11 @@ const UserSchema = new mongoose.Schema({
   },
   tel: {
     type: String,
+    required: [true, "Please add a telephone number"],
+    match: [
+      /^0[0-9]{9}$/,
+      "Please add a valid telephone number starting with 0 and followed by 9 digits",
+    ],
   },
 });
 
