@@ -33,6 +33,9 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  tel: {
+    type: String,
+  },
 });
 
 //Encrypt password using bcrypt
